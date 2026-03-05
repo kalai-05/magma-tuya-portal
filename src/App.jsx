@@ -20,7 +20,8 @@ import {
 import axios from 'axios'
 import './App.css'
 
-const USER_ID = "68342449de0cc1bcc74c042a"
+const USER_ID = import.meta.env.VITE_USER_ID
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api'
 
 function App() {
   const [devices, setDevices] = useState({})
@@ -32,7 +33,7 @@ function App() {
   const fetchData = async () => {
     try {
       setRefreshing(true)
-      const resp = await axios.get(`/api/user/${USER_ID}/tuya/devices/data`)
+      const resp = await axios.get(`${API_BASE}/user/${USER_ID}/tuya/devices/data`)
       if (resp.data.statusCode === "S1000") {
         setDevices(resp.data.content)
         setError(null)
@@ -50,7 +51,7 @@ function App() {
   const toggleSwitch = async (deviceId, currentStatus) => {
     try {
       const newStatus = currentStatus === 'true' ? false : true
-      const resp = await axios.put(`/api/user/${USER_ID}/tuya/device/${deviceId}/switch/${newStatus}`)
+      const resp = await axios.put(`${API_BASE}/user/${USER_ID}/tuya/device/${deviceId}/switch/${newStatus}`)
       if (resp.data.content && resp.data.content.includes('"success":true')) {
         setDevices(prev => ({
           ...prev,
